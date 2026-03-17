@@ -170,21 +170,20 @@ a {
   padding: 6rem 2rem 4rem;
 }
 
-.logo-blob {
-  background: var(--navy);
-  padding: 2.5rem 5rem;
+.hero-logo-wrap {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-  animation: blobMorph 5s ease-in-out infinite;
-  cursor: default;
-  transition: transform 0.3s ease;
   transform: rotate(-1.5deg);
 }
 
-.logo-blob:hover {
-  transform: rotate(1deg) scale(1.04);
+.hero-logo-img {
+  width: clamp(280px, 55vw, 720px);
+  height: auto;
+  display: block;
+  user-select: none;
+  pointer-events: none;
 }
 
 .logo-text {
@@ -193,9 +192,10 @@ a {
   color: var(--off-white);
   letter-spacing: 0.04em;
   line-height: 1;
-  display: block;
+  position: absolute;
   animation: glitch 3.5s infinite;
   user-select: none;
+  z-index: 1;
 }
 
 .hero-edition {
@@ -1050,6 +1050,78 @@ body::after {
 @keyframes interferenceShift {
   from { background-position: 0 0; }
   to   { background-position: 0 60px; }
+}
+
+/* ─── PDF MODAL ─── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.25s ease;
+}
+
+.modal-box {
+  background: var(--black);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: var(--navy);
+  flex-shrink: 0;
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--off-white);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.modal-title em {
+  font-style: normal;
+  color: var(--orange);
+  font-size: 0.9rem;
+  margin-left: 0.8rem;
+  letter-spacing: 0.15em;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--off-white);
+  font-size: 1.1rem;
+  opacity: 0.6;
+  transition: opacity 0.2s, transform 0.2s;
+  line-height: 1;
+  padding: 0.3rem 0.5rem;
+}
+
+.modal-close:hover {
+  opacity: 1;
+  transform: rotate(90deg);
+}
+
+.modal-iframe {
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: #fff;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 /* ─── RESPONSIVE ─── */

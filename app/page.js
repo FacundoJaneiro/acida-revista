@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /* ─── DATA ─── */
 const REVISTAS = [
@@ -74,10 +74,40 @@ function Marquee({ items, reverse = false, variant = 'dark' }) {
   );
 }
 
+/* ─── PDF MODAL ─── */
+function PdfModal({ revista, onClose }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [onClose]);
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <span className="modal-title">{revista.titulo} <em>{revista.subtitulo}</em></span>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        <iframe
+          className="modal-iframe"
+          src={revista.href}
+          title={revista.titulo}
+        />
+      </div>
+    </div>
+  );
+}
+
 /* ─── PAGE ─── */
 export default function Home() {
   const navRef = useRef(null);
   const heroRef = useRef(null);
+  const [modalRevista, setModalRevista] = useState(null);
 
   useEffect(() => {
     /* Scroll reveal */
@@ -143,35 +173,19 @@ export default function Home() {
         {/* Ghost background text */}
         <div className="hero-ghost-text" aria-hidden="true">ÁCIDA</div>
 
-        {/* Floating scattered words */}
-        <div className="float-wrap" data-depth="0.8"
-          style={{ position: 'absolute', top: '18%', left: '7%' }}>
-          <span className="hero-float-word" style={{ '--base-rot': '-14deg' }}>URGENCIA</span>
-        </div>
-        <div className="float-wrap" data-depth="1.4"
-          style={{ position: 'absolute', top: '20%', right: '5%' }}>
-          <span className="hero-float-word" style={{ '--base-rot': '9deg', animationDelay: '-3.5s' }}>ESCRITURA</span>
-        </div>
-        <div className="float-wrap" data-depth="1.1"
-          style={{ position: 'absolute', bottom: '30%', left: '4%' }}>
-          <span className="hero-float-word" style={{ '--base-rot': '16deg', animationDelay: '-7s' }}>COLECTIVA</span>
-        </div>
-        <div className="float-wrap" data-depth="0.6"
-          style={{ position: 'absolute', bottom: '33%', right: '6%' }}>
-          <span className="hero-float-word" style={{ '--base-rot': '-7deg', animationDelay: '-1.5s' }}>PALABRA</span>
-        </div>
-        <div className="float-wrap" data-depth="1.8"
-          style={{ position: 'absolute', top: '10%', left: '32%' }}>
-          <span className="hero-float-word hero-float-word--num" style={{ '--base-rot': '5deg', animationDelay: '-5s' }}>01</span>
-        </div>
 
         {/* Pulse rings behind logo */}
         <div className="hero-pulse-ring" aria-hidden="true" />
         <div className="hero-pulse-ring hero-pulse-ring--2" aria-hidden="true" />
 
         <div className="hero-content">
-          <div className="logo-blob" aria-label="ÁCIDA Revista">
+          <div className="hero-logo-wrap">
             <span className="logo-text">ÁCIDA</span>
+            <img
+              src="/fondo-titulo.svg"
+              alt="ÁCIDA Revista"
+              className="hero-logo-img"
+            />
           </div>
 
           <p className="hero-edition">Revista digital · Buenos Aires</p>
@@ -275,18 +289,16 @@ export default function Home() {
             {/* Available editions */}
             {REVISTAS.map((r, i) => (
               <div key={r.id} className={r.tilt}>
-                <a
-                  href={r.href}
+                <div
                   className="revista-card reveal"
                   style={{ transitionDelay: `${i * 0.12}s` }}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  onClick={() => setModalRevista(r)}
                 >
                   <div className="card-edition">{r.subtitulo}</div>
                   <div className="card-title">{r.titulo}</div>
                   <div className="card-fecha">{r.fecha}</div>
                   <div className="card-cta">Leer →</div>
-                </a>
+                </div>
               </div>
             ))}
 
@@ -306,6 +318,11 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ═══ PDF MODAL ═══ */}
+      {modalRevista && (
+        <PdfModal revista={modalRevista} onClose={() => setModalRevista(null)} />
+      )}
 
       {/* ═══ FOOTER ═══ */}
       <footer className="footer">
