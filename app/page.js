@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 /* ─── DATA ─── */
 const REVISTAS = [
   {
@@ -9,7 +11,7 @@ const REVISTAS = [
     titulo: 'Vómito',
     subtitulo: 'Primera edición',
     fecha: 'Septiembre 2025',
-    href: '/revistas/acida-vomito.pdf',
+    href: `${BASE}/revistas/acida-vomito.pdf`,
     disponible: true,
     tilt: 'card-tilt-neg',
   },
@@ -18,7 +20,7 @@ const REVISTAS = [
     titulo: 'Exprés',
     subtitulo: 'Segunda edición',
     fecha: '2025',
-    href: '/revistas/acida-expres.pdf',
+    href: `${BASE}/revistas/acida-expres.pdf`,
     disponible: true,
     tilt: 'card-tilt-pos',
   },
@@ -182,14 +184,14 @@ export default function Home() {
           <div className="hero-logo-wrap">
             <span className="logo-text">ÁCIDA</span>
             <img
-              src="/fondo-titulo.svg"
+              src={`${BASE}/fondo-titulo.svg`}
               alt="ÁCIDA Revista"
               className="hero-logo-img"
             />
           </div>
 
           <p className="hero-edition">Revista digital · Buenos Aires</p>
-          <p className="hero-tagline">sostener la palabra</p>
+          <p className="hero-tagline">Refundarse en los viejos métodos colectivos</p>
         </div>
 
         {/* scroll hint */}
@@ -198,22 +200,17 @@ export default function Home() {
           <span className="hero-scroll-label">scroll</span>
         </div>
 
-        {/* Ticker strip at bottom of hero */}
-        <div className="hero-ticker">
-          <Marquee items={MARQUEE_A} variant="dark" />
-        </div>
       </section>
 
       {/* ═══ QUIÉNES SOMOS ═══ */}
       <section id="quienes-somos" className="quienes">
         <div className="quienes-blob-bg" aria-hidden="true" />
         <div className="quienes-blob-sm" aria-hidden="true" />
-        <div className="quienes-spike" aria-hidden="true" />
-        <div className="quienes-watermark" aria-hidden="true">ÁCIDA</div>
         <div className="quienes-vertical" aria-hidden="true">ESCRITURA COLECTIVA · ESCRITURA COLECTIVA · ESCRITURA COLECTIVA</div>
         <div className="quienes-slash" aria-hidden="true" />
         <div className="quienes-slash-2" aria-hidden="true" />
         <div className="quienes-interference" aria-hidden="true" />
+        <img src={`${BASE}/elemento.png`} className="quienes-elemento" aria-hidden="true" />
 
         <div className="quienes-inner">
           <h2 className="quienes-title reveal">
