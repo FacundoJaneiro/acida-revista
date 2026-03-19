@@ -111,6 +111,14 @@ export default function Home() {
   const heroRef = useRef(null);
   const [modalRevista, setModalRevista] = useState(null);
 
+  const handleRevista = (r) => {
+    if (window.innerWidth < 768) {
+      window.open(r.href, '_blank');
+    } else {
+      setModalRevista(r);
+    }
+  };
+
   useEffect(() => {
     /* Scroll reveal */
     const els = document.querySelectorAll('.reveal, .reveal-left');
@@ -282,7 +290,7 @@ export default function Home() {
                 <div
                   className="revista-card reveal"
                   style={{ transitionDelay: `${i * 0.12}s` }}
-                  onClick={() => setModalRevista(r)}
+                  onClick={() => handleRevista(r)}
                 >
                   <div className="card-edition">{r.subtitulo}</div>
                   <div className="card-title">{r.titulo}</div>
