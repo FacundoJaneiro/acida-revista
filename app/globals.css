@@ -146,9 +146,10 @@ a {
 
 .hero-starburst {
   position: absolute;
-  inset: -50%;
-  width: 200%;
-  height: 200%;
+  inset: -20%;
+  width: 140%;
+  height: 140%;
+  margin-top: -8rem;
   color: var(--navy-dark);
   opacity: 0.3;
   animation: slowRotate 60s linear infinite;
@@ -158,9 +159,10 @@ a {
 /* second starburst counter-rotating */
 .hero-starburst-2 {
   position: absolute;
-  inset: -40%;
-  width: 180%;
-  height: 180%;
+  inset: -10%;
+  width: 120%;
+  height: 120%;
+  margin-top: -8rem;
   color: var(--navy-dark);
   opacity: 0.14;
   animation: slowRotate 35s linear infinite reverse;
@@ -1262,6 +1264,7 @@ body::after {
   .hero { padding-bottom: 0; padding-top: 3rem; }
   .hero-content { padding: 5rem 1.5rem 3rem; }
   .hero-float-word, .hero-pulse-ring { display: none; }
+  .hero-starburst, .hero-starburst-2 { margin-top: -3rem; }
 
   /* QUIÉNES SOMOS */
   .quienes { padding: 8rem 1.5rem 6rem; overflow: hidden; }
