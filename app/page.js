@@ -172,10 +172,6 @@ export default function Home() {
         <Starburst className="hero-starburst" count={40} len={150} />
         <Starburst className="hero-starburst-2" count={24} len={120} />
 
-        {/* Ghost background text */}
-        <div className="hero-ghost-text" aria-hidden="true">ÁCIDA</div>
-
-
         {/* Pulse rings behind logo */}
         <div className="hero-pulse-ring" aria-hidden="true" />
         <div className="hero-pulse-ring hero-pulse-ring--2" aria-hidden="true" />
@@ -204,13 +200,13 @@ export default function Home() {
 
       {/* ═══ QUIÉNES SOMOS ═══ */}
       <section id="quienes-somos" className="quienes">
-        <div className="quienes-blob-bg" aria-hidden="true" />
         <div className="quienes-blob-sm" aria-hidden="true" />
         <div className="quienes-vertical" aria-hidden="true">ESCRITURA COLECTIVA · ESCRITURA COLECTIVA · ESCRITURA COLECTIVA</div>
         <div className="quienes-slash" aria-hidden="true" />
         <div className="quienes-slash-2" aria-hidden="true" />
         <div className="quienes-interference" aria-hidden="true" />
         <img src={`${BASE}/elemento.png`} className="quienes-elemento" aria-hidden="true" />
+        <img src={`${BASE}/acido-naranja.png`} className="quienes-acido" alt="" />
 
         <div className="quienes-inner">
           <h2 className="quienes-title reveal">
@@ -267,10 +263,6 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Marquee strip at bottom of section */}
-        <div className="quienes-ticker">
-          <Marquee items={MARQUEE_B} reverse variant="orange" />
-        </div>
       </section>
 
       {/* ═══ REPOSITORIO ═══ */}
@@ -284,6 +276,7 @@ export default function Home() {
 
           <div className="repositorio-grid">
             {/* Available editions */}
+
             {REVISTAS.map((r, i) => (
               <div key={r.id} className={r.tilt}>
                 <div
@@ -313,6 +306,16 @@ export default function Home() {
               </div>
             ))}
           </div>
+
+          <a
+            href="https://substack.com/@acidarevista"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="substack-cta reveal"
+          >
+            <span className="substack-cta-title">Todos los artículos</span>
+            <span className="substack-cta-sub">SUBSTACK</span>
+          </a>
         </div>
       </section>
 

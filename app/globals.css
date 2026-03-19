@@ -358,15 +358,26 @@ a {
 
 .quienes-elemento {
   position: absolute;
-  width: clamp(340px, 55vw, 700px);
+  width: clamp(340px, 45vw, 600px);
   height: auto;
-  bottom: 8%;
-  left: -5%;
-  opacity: 0.18;
+  bottom: 6%;
+  left: -3%;
+  opacity: 0.45;
   transform: rotate(-12deg);
   pointer-events: none;
   filter: invert(1);
   mix-blend-mode: screen;
+}
+
+.quienes-acido {
+  position: absolute;
+  width: clamp(280px, 38vw, 560px);
+  height: auto;
+  right: -4%;
+  top: 50%;
+  transform: translateY(-50%) rotate(6deg);
+  pointer-events: none;
+  opacity: 0.9;
 }
 
 .quienes-inner {
@@ -374,6 +385,7 @@ a {
   margin: 0 auto;
   position: relative;
   z-index: 1;
+  text-align: center;
 }
 
 .quienes-title {
@@ -404,37 +416,34 @@ a {
 }
 
 .quienes-grid {
-  display: grid;
-  grid-template-columns: 1.3fr 0.7fr;
-  gap: 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
   margin-bottom: 6rem;
-  align-items: start;
+  max-width: 100%;
 }
 
 .quienes-col p {
-  font-size: clamp(0.95rem, 1.4vw, 1.08rem);
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
   line-height: 1.85;
-  margin-bottom: 1.6rem;
-  color: rgba(255, 248, 236, 0.85);
+  margin-bottom: 1.4rem;
+  color: rgba(255, 248, 236, 1);
 }
 
-/* primera columna: primer párrafo más grande, como si el renglón se hubiera roto */
+/* primer párrafo más grande */
 .quienes-col:first-child p:first-child {
-  font-size: clamp(1.1rem, 1.8vw, 1.3rem);
+  font-size: clamp(1.15rem, 1.9vw, 1.35rem);
   line-height: 1.6;
 }
 
 .quienes-col:first-child p:last-child {
-  font-size: clamp(0.8rem, 1.1vw, 0.92rem);
-  opacity: 0.7;
+  font-size: clamp(0.95rem, 1.3vw, 1.08rem);
+  opacity: 1;
 }
 
-/* segunda columna: cae mucho más abajo y va levemente torcida */
+/* segunda columna: fluye sin offset */
 .quienes-col:last-child {
-  padding-top: 8rem;
-  transform: rotate(1.2deg) skewY(-1deg);
-  border-left: 1px solid rgba(255,248,236,0.08);
-  padding-left: 2rem;
+  padding-top: 0;
 }
 
 .quienes-col p:last-child {
@@ -467,10 +476,9 @@ a {
   border-top: 3px solid rgba(255,248,236,0.1);
   padding-top: 3rem;
   max-width: 950px;
-  margin-left: -14%;
-  padding-left: 14%;
+  margin: 0 auto;
   transform: skewX(-4deg) rotate(-1deg);
-  transform-origin: left center;
+  transform-origin: center;
 }
 
 /* ─── REPOSITORIO ─── */
@@ -676,6 +684,43 @@ a {
   text-transform: uppercase;
   transform: rotate(-3deg);
   display: inline-block;
+}
+
+/* ─── SUBSTACK CTA ─── */
+.substack-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 2rem 2.5rem;
+  margin-top: 3rem;
+  background: var(--navy);
+  color: var(--off-white);
+  text-decoration: none;
+  transition: background 0.3s ease, color 0.3s ease;
+  gap: 0.3rem;
+}
+
+.substack-cta:hover {
+  background: var(--orange);
+  color: var(--navy);
+}
+
+.substack-cta-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.substack-cta-sub {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.5;
 }
 
 /* ─── FOOTER ─── */
@@ -1139,26 +1184,59 @@ body::after {
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 768px) {
+  /* NAV */
   .nav { padding: 1rem 1.5rem; }
   .nav-links { gap: 1.5rem; }
 
-  .hero-content { padding-top: 5rem; }
-  .logo-blob { padding: 1.8rem 3rem; }
+  /* HERO */
+  .hero-content { padding: 5rem 1.5rem 3rem; }
+  .hero-float-word, .hero-pulse-ring { display: none; }
 
-  .quienes { padding: 10rem 1.5rem 8rem; }
-  .quienes-grid { grid-template-columns: 1fr; gap: 2rem; }
-  .quienes-blob-bg { display: none; }
-  .quienes-highlight { margin-left: 0; padding-left: 0; }
+  /* QUIÉNES SOMOS */
+  .quienes { padding: 8rem 1.5rem 6rem; overflow: hidden; }
+  .quienes-acido { display: none; }
+  .quienes-elemento { display: none; }
+  .quienes-blob-bg, .quienes-blob-sm { display: none; }
+  .quienes-vertical { display: none; }
 
-  .repositorio { padding: 10rem 1.5rem 5rem; }
-  .repositorio-grid { grid-template-columns: 1fr; }
+  .quienes-inner {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .quienes-title {
+    transform: rotate(-2deg);
+    margin-bottom: 2.5rem;
+  }
+  .quienes-title-line1 { font-size: clamp(3.5rem, 14vw, 6rem); }
+  .quienes-title-line2 { font-size: clamp(5rem, 20vw, 9rem); margin-left: 1rem; }
+
+  .quienes-grid { grid-template-columns: 1fr; gap: 0; }
+  .quienes-col:last-child { padding-top: 0; transform: none; }
+  .quienes-col p { font-size: 1rem; }
+  .quienes-col:first-child p:first-child { font-size: 1.05rem; }
+
+  .quienes-highlight {
+    font-size: clamp(1.6rem, 7vw, 2.5rem);
+    margin: 0 auto;
+    padding-left: 0;
+    transform: none;
+  }
+
+  /* EDICIONES */
+  .repositorio { padding: 8rem 1.5rem 5rem; overflow: hidden; }
+  .repositorio-inner { max-width: 100%; }
+  .repositorio-title { font-size: clamp(3.5rem, 16vw, 7rem); }
+  .repositorio-subtitle { font-size: 0.75rem; }
+  .repositorio-grid { grid-template-columns: 1fr; gap: 1rem; }
   .card-tilt-neg, .card-tilt-pos, .card-tilt-slight { transform: none; }
+  .repositorio-blob-bg { display: none; }
+  .repositorio-num-bg { display: none; }
 
+  .substack-cta { padding: 1.8rem 1.5rem; }
+  .substack-cta-title { font-size: clamp(1.4rem, 6vw, 2rem); }
+
+  /* FOOTER */
   .footer { padding: 2.5rem 1.5rem; }
   .footer-right { align-items: flex-start; }
-
-  /* New elements – mobile */
-  .hero-float-word, .hero-ghost-text, .hero-pulse-ring { display: none; }
-  .quienes-ticker { margin: 4rem -1.5rem 0; }
-  .repositorio-num-bg { font-size: 14rem; opacity: 0.05; }
 }
