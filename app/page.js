@@ -18,7 +18,7 @@ const REVISTAS = [
   {
     id: 2,
     titulo: 'Exprés',
-    subtitulo: 'Segunda edición',
+    subtitulo: 'Edición exprés',
     fecha: '2025',
     href: `${BASE}/revistas/acida-expres.pdf`,
     disponible: true,
@@ -199,10 +199,10 @@ export default function Home() {
         </div>
 
         {/* scroll hint */}
-        <div className="hero-scroll" aria-hidden="true">
+        <a href="#quienes-somos" className="hero-scroll">
           <div className="hero-scroll-line" />
           <span className="hero-scroll-label">scroll</span>
-        </div>
+        </a>
 
       </section>
 
@@ -231,12 +231,12 @@ export default function Home() {
                 <strong>sostener la palabra</strong>, una que no se pliegue ni
                 a la lógica de lo viral ni a la producción en serie de clicks.
               </p>
-              <p>Lo entendemos como un espacio para arriesgar.</p>
               <p>
-                No buscamos certezas ni imponer solemnidad. Preferimos ensayar.
-                Probar formas nuevas de decir. Porque creemos que el sentido no
-                está dado, sino que se construye en colectivo, entre
-                contradicciones, preguntas y apuestas.
+                Lo entendemos como un espacio para arriesgar. No buscamos imponer
+                certezas ni vestirnos de solemnidad. Preferimos ensayar. Probar
+                formas nuevas de decir. Porque creemos que el sentido no está dado,
+                sino que se construye en colectivo, entre contradicciones, preguntas
+                y apuestas.
               </p>
             </div>
 
@@ -246,24 +246,23 @@ export default function Home() {
             >
               <p>
                 No nos interesa la neutralidad ni los discursos tibios. Tomamos
-                posición, pero sin caer en clichés ideológicos ni repetir
-                fórmulas. Nos mueve la intuición de que todavía se pueden
-                construir nuevos relatos posibles.
+                posición, pero sin caer en celos ideológicos ni repetir fórmulas.
+                Nos mueve la intuición de que todavía se pueden construir nuevos
+                relatos posibles.
               </p>
               <p>
                 Ácida es una apuesta por la escritura colectiva. Por el texto que
                 se transforma mientras lo pensamos, mientras lo discutimos,
-                mientras lo prestamos.
-              </p>
-              <p>
-                No buscamos ser una referencia, sino ser parte de una conversación
-                más grande.
+                mientras lo prestamos. No buscamos imponernos como referencia,
+                sino ser parte de una conversación más grande.
               </p>
               <p>
                 <strong>Esperamos que les incomode.</strong>
               </p>
             </div>
           </div>
+
+          <img src={`${BASE}/elemento.png`} className="quienes-elemento-mobile" aria-hidden="true" />
 
           <p className="quienes-highlight reveal" style={{ transitionDelay: '0.15s' }}>
             Acá van a encontrar artículos, reseñas, fotos, dibujos, cuentos,

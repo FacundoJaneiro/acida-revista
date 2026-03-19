@@ -131,7 +131,7 @@ a {
   justify-content: center;
   overflow: hidden;
   z-index: 3;
-  clip-path: polygon(0 0, 100% 0, 100% 90%, 3% 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 88%, 0% 100%);
   padding-bottom: 10rem;
   margin-bottom: -5rem;
 }
@@ -237,6 +237,7 @@ a {
   opacity: 0;
   animation: fadeUp 1s ease 1.2s forwards;
   z-index: 2;
+  text-decoration: none;
 }
 
 .hero-scroll-line {
@@ -367,6 +368,10 @@ a {
   pointer-events: none;
   filter: invert(1);
   mix-blend-mode: screen;
+}
+
+.quienes-elemento-mobile {
+  display: none;
 }
 
 .quienes-acido {
@@ -1196,6 +1201,14 @@ body::after {
   .quienes { padding: 8rem 1.5rem 6rem; overflow: hidden; }
   .quienes-acido { display: none; }
   .quienes-elemento { display: none; }
+  .quienes-elemento-mobile {
+    display: block;
+    width: 80%;
+    max-width: 320px;
+    margin: 0.5rem auto 2rem;
+    opacity: 0.6;
+    filter: invert(1);
+  }
   .quienes-blob-bg, .quienes-blob-sm { display: none; }
   .quienes-vertical { display: none; }
 
@@ -1211,7 +1224,7 @@ body::after {
   .quienes-title-line1 { font-size: clamp(3.5rem, 14vw, 6rem); }
   .quienes-title-line2 { font-size: clamp(5rem, 20vw, 9rem); margin-left: 1rem; }
 
-  .quienes-grid { grid-template-columns: 1fr; gap: 0; }
+  .quienes-grid { grid-template-columns: 1fr; gap: 0; margin-bottom: 1rem; }
   .quienes-col:last-child { padding-top: 0; transform: none; }
   .quienes-col p { font-size: 1rem; }
   .quienes-col:first-child p:first-child { font-size: 1.05rem; }
