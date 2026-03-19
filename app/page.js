@@ -18,8 +18,8 @@ const REVISTAS = [
   {
     id: 2,
     titulo: 'Exprés',
-    subtitulo: 'Edición exprés',
-    fecha: '2025',
+    subtitulo: 'Primera edición exprés',
+    fecha: 'Diciembre 2025',
     href: `${BASE}/revistas/acida-expres.pdf`,
     disponible: true,
     tilt: 'card-tilt-pos',
@@ -196,6 +196,15 @@ export default function Home() {
 
           <p className="hero-edition">Revista digital · Buenos Aires</p>
           <p className="hero-tagline">Refundarse en los viejos métodos colectivos</p>
+
+          <a
+            href="https://www.instagram.com/acidarevista"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hero-ig"
+          >
+            @acidarevista
+          </a>
         </div>
 
         {/* scroll hint */}
@@ -275,7 +284,6 @@ export default function Home() {
       {/* ═══ REPOSITORIO ═══ */}
       <section id="ediciones" className="repositorio">
         <div className="repositorio-blob-bg" aria-hidden="true" />
-        <div className="repositorio-num-bg" aria-hidden="true">01</div>
 
         <div className="repositorio-inner">
           <h2 className="repositorio-title reveal">EDICIONES</h2>
@@ -339,6 +347,7 @@ export default function Home() {
             <a href="#inicio">Inicio</a>
             <a href="#quienes-somos">Quiénes somos</a>
             <a href="#ediciones">Ediciones</a>
+            <a href="https://www.instagram.com/acidarevista" target="_blank" rel="noopener noreferrer">Instagram</a>
           </div>
           <span className="footer-text">
             Ciudad Autónoma de Buenos Aires · 2025
