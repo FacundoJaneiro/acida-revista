@@ -242,7 +242,7 @@ export default function Home() {
               </p>
               <p>
                 Lo entendemos como un espacio para arriesgar. No buscamos imponer
-                certezas ni vestirnos de solemnidad. Preferimos ensayar. Probar
+                certezas ni vestirnos de solemnidad. Preferimos ensayar, probar
                 formas nuevas de decir. Porque creemos que el sentido no está dado,
                 sino que se construye en colectivo, entre contradicciones, preguntas
                 y apuestas.
@@ -260,7 +260,7 @@ export default function Home() {
                 relatos posibles.
               </p>
               <p>
-                Ácida es una apuesta por la escritura colectiva. Por el texto que
+                Ácida es una apuesta por la escritura colectiva, por el texto que
                 se transforma mientras lo pensamos, mientras lo discutimos,
                 mientras lo prestamos. No buscamos imponernos como referencia,
                 sino ser parte de una conversación más grande.
