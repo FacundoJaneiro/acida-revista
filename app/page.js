@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-const BASE = process.env.NODE_ENV === 'production' ? '/acida-revista' : '';
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 /* ─── DATA ─── */
 const REVISTAS = [

@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "preview": "NEXT_PUBLIC_BASE_PATH='' next build && npx serve@latest out"
   },
   "dependencies": {
     "next": "16.1.6",
