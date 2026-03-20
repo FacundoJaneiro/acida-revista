@@ -422,6 +422,9 @@ export default function Home() {
             <a href="https://www.instagram.com/acidarevista" target="_blank" rel="noopener noreferrer">Instagram</a>
           </div>
           <span className="footer-text">
+            Diseño y desarrollo web · Facundo Janeiro y Julieta Estévez
+          </span>
+          <span className="footer-text">
             Ciudad Autónoma de Buenos Aires · 2025
           </span>
         </div>
