@@ -11,7 +11,7 @@ const REVISTAS = [
     titulo: 'Vómito',
     subtitulo: 'Primera edición',
     fecha: 'Septiembre 2025',
-    href: `${BASE}/revistas/acida-vomito.pdf`,
+    href: `${BASE}/revistas/Ácida - vomito.pdf`,
     disponible: true,
     tilt: 'card-tilt-neg',
   },
@@ -20,15 +20,23 @@ const REVISTAS = [
     titulo: 'Exprés',
     subtitulo: 'Primera edición exprés',
     fecha: 'Diciembre 2025',
-    href: `${BASE}/revistas/acida-expres.pdf`,
+    href: `${BASE}/revistas/Ácida - Exprés.pdf`,
     disponible: true,
     tilt: 'card-tilt-pos',
   },
+  {
+    id: 3,
+    titulo: 'El dedo en la llaga',
+    subtitulo: 'Segunda edición',
+    fecha: 'Marzo 2026',
+    href: `${BASE}/revistas/Ácida - El dedo en la llaga.pdf`,
+    disponible: true,
+    releaseDate: new Date('2026-03-21T03:00:00Z'),
+    tilt: 'card-tilt-neg',
+  },
 ];
 
-const PROXIMAS = [
-  { id: 3, titulo: 'El dedo en la llaga', subtitulo: 'Segunda edición', fecha: 'Marzo 2026', tilt: 'card-tilt-slight' },
-];
+const PROXIMAS = [];
 
 const MARQUEE_A = ['ÁCIDA', 'SOSTENER LA PALABRA', 'ESCRITURA COLECTIVA', 'BUENOS AIRES', 'URGENCIA', 'APUESTA', 'RIESGO'];
 const MARQUEE_B = ['VÓMITO', 'PRIMERA EDICIÓN', 'SEPTIEMBRE 2025', 'ENSAYO', 'CRÓNICA', 'POESÍA', 'DIÁLOGO'];
@@ -100,6 +108,41 @@ function PdfModal({ revista, onClose }) {
           src={revista.href}
           title={revista.titulo}
         />
+      </div>
+    </div>
+  );
+}
+
+/* ─── COUNTDOWN CARD ─── */
+function CountdownCard({ revista, index }) {
+  const [timeLeft, setTimeLeft] = useState(null);
+
+  useEffect(() => {
+    const calc = () => {
+      const diff = revista.releaseDate - new Date();
+      if (diff <= 0) return setTimeLeft({ expired: true });
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      setTimeLeft({ h: String(h).padStart(2, '0'), m: String(m).padStart(2, '0'), s: String(s).padStart(2, '0') });
+    };
+    calc();
+    const id = setInterval(calc, 1000);
+    return () => clearInterval(id);
+  }, [revista.releaseDate]);
+
+  if (timeLeft?.expired) return null;
+
+  return (
+    <div className={revista.tilt}>
+      <div className="revista-card revista-card--countdown reveal" style={{ transitionDelay: `${index * 0.12}s` }}>
+        <div className="card-edition">{revista.subtitulo}</div>
+        <div className="card-title card-title--long">{revista.titulo}</div>
+        <div className="card-pronto" style={{ color: 'rgba(255,248,236,0.6)' }}>Próximamente</div>
+        <div className="card-countdown">
+          {timeLeft ? `${timeLeft.h}:${timeLeft.m}:${timeLeft.s}` : '--:--:--'}
+        </div>
+        <div className="card-fecha">{revista.fecha}</div>
       </div>
     </div>
   );
@@ -302,20 +345,25 @@ export default function Home() {
           <div className="repositorio-grid">
             {/* Available editions */}
 
-            {REVISTAS.map((r, i) => (
-              <div key={r.id} className={r.tilt}>
-                <div
-                  className="revista-card reveal"
-                  style={{ transitionDelay: `${i * 0.12}s` }}
-                  onClick={() => handleRevista(r)}
-                >
-                  <div className="card-edition">{r.subtitulo}</div>
-                  <div className="card-title">{r.titulo}</div>
-                  <div className="card-fecha">{r.fecha}</div>
-                  <div className="card-cta">Leer →</div>
+            {REVISTAS.map((r, i) => {
+              if (r.releaseDate && new Date() < r.releaseDate) {
+                return <CountdownCard key={r.id} revista={r} index={i} />;
+              }
+              return (
+                <div key={r.id} className={r.tilt}>
+                  <div
+                    className="revista-card reveal"
+                    style={{ transitionDelay: `${i * 0.12}s` }}
+                    onClick={() => handleRevista(r)}
+                  >
+                    <div className="card-edition">{r.subtitulo}</div>
+                    <div className={`card-title${r.titulo.length > 10 ? ' card-title--long' : ''}`}>{r.titulo}</div>
+                    <div className="card-fecha">{r.fecha}</div>
+                    <div className="card-cta">Leer →</div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
             {/* Coming soon */}
             {PROXIMAS.map((r, i) => (

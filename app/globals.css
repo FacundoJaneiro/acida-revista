@@ -684,6 +684,31 @@ a {
   transition: color 0.3s;
 }
 
+.card-title--long {
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+}
+
+.revista-card--countdown {
+  cursor: default;
+}
+
+.revista-card--countdown:hover {
+  transform: none;
+}
+
+.revista-card--countdown::after {
+  display: none;
+}
+
+.card-countdown {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  color: var(--orange);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
 .revista-card:hover .card-title {
   color: var(--navy);
 }
