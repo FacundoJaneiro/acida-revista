@@ -43,8 +43,8 @@ function Starburst({ className, count = 40, len = 150 }) {
         key={i}
         x1="0"
         y1="0"
-        x2={Math.cos(rad) * len}
-        y2={Math.sin(rad) * len}
+        x2={parseFloat((Math.cos(rad) * len).toFixed(4))}
+        y2={parseFloat((Math.sin(rad) * len).toFixed(4))}
         stroke="currentColor"
         strokeWidth="0.5"
       />
