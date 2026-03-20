@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-const BASE = process.env.NEXT_PUBLIC_BASE_PATH || '';
+const BASE = '';
 
 /* ─── DATA ─── */
 const REVISTAS = [
