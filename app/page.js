@@ -27,7 +27,7 @@ const REVISTAS = [
 ];
 
 const PROXIMAS = [
-  { id: 3, titulo: '??', subtitulo: 'Próximamente', tilt: 'card-tilt-slight' },
+  { id: 3, titulo: 'El dedo en la llaga', subtitulo: 'Segunda edición', fecha: 'Marzo 2026', tilt: 'card-tilt-slight' },
 ];
 
 const MARQUEE_A = ['ÁCIDA', 'SOSTENER LA PALABRA', 'ESCRITURA COLECTIVA', 'BUENOS AIRES', 'URGENCIA', 'APUESTA', 'RIESGO'];
@@ -120,6 +120,10 @@ export default function Home() {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     /* Scroll reveal */
     const els = document.querySelectorAll('.reveal, .reveal-left');
     const observer = new IntersectionObserver(
@@ -167,7 +171,7 @@ export default function Home() {
       {/* ═══ NAV ═══ */}
       <nav ref={navRef} className="nav">
         <a href="#inicio" className="nav-logo">
-          ÁCIDA
+          <img src={`${BASE}/navbar.png`} alt="ÁCIDA" className="nav-logo-img" />
         </a>
         <div className="nav-links">
           <a href="#quienes-somos">Quiénes somos</a>
@@ -186,7 +190,13 @@ export default function Home() {
 
         <div className="hero-content">
           <div className="hero-logo-wrap">
-            <span className="logo-text">ÁCIDA</span>
+            <div className="logo-text-img-wrap">
+              <img
+                src={`${BASE}/acida-titulo.svg`}
+                alt="ÁCIDA"
+                className="logo-text-img"
+              />
+            </div>
             <img
               src={`${BASE}/fondo-titulo.svg`}
               alt="ÁCIDA Revista"
@@ -341,7 +351,7 @@ export default function Home() {
 
       {/* ═══ FOOTER ═══ */}
       <footer className="footer">
-        <span className="footer-logo">ÁCIDA</span>
+        <img src={`${BASE}/footer.png`} alt="ÁCIDA" className="footer-logo-img" />
         <div className="footer-right">
           <div className="footer-links">
             <a href="#inicio">Inicio</a>
