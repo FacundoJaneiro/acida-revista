@@ -116,11 +116,12 @@ function PdfModal({ revista, onClose }) {
 /* ─── COUNTDOWN CARD ─── */
 function CountdownCard({ revista, index }) {
   const [timeLeft, setTimeLeft] = useState(null);
+  const [expired, setExpired] = useState(false);
 
   useEffect(() => {
     const calc = () => {
       const diff = revista.releaseDate - new Date();
-      if (diff <= 0) return setTimeLeft({ expired: true });
+      if (diff <= 0) { setExpired(true); return; }
       const h = Math.floor(diff / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
       const s = Math.floor((diff % 60000) / 1000);
@@ -131,7 +132,20 @@ function CountdownCard({ revista, index }) {
     return () => clearInterval(id);
   }, [revista.releaseDate]);
 
-  if (timeLeft?.expired) return null;
+  if (expired) return (
+    <div className={revista.tilt}>
+      <div
+        className="revista-card reveal"
+        style={{ transitionDelay: `${index * 0.12}s` }}
+        onClick={() => window.innerWidth < 768 ? window.open(revista.href, '_blank') : null}
+      >
+        <div className="card-edition">{revista.subtitulo}</div>
+        <div className="card-title card-title--long">{revista.titulo}</div>
+        <div className="card-fecha">{revista.fecha}</div>
+        <div className="card-cta">Leer →</div>
+      </div>
+    </div>
+  );
 
   return (
     <div className={revista.tilt}>
