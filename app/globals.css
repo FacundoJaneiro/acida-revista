@@ -1100,23 +1100,7 @@ a {
 
 /* ─── SCANLINE ─── */
 .hero::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 248, 236, 0.22) 30%,
-    rgba(255, 248, 236, 0.22) 70%,
-    transparent 100%
-  );
-  animation: scanline 9s linear infinite;
-  animation-delay: 3s;
-  pointer-events: none;
-  z-index: 5;
-  top: -5%;
+  display: none;
 }
 
 /* ─── NOISE OVERLAY ─── */
@@ -1306,6 +1290,7 @@ body::after {
   .hero-content { padding: 5rem 1.5rem 3rem; }
   .hero-float-word, .hero-pulse-ring { display: none; }
   .hero-scroll { display: none; }
+
   .hero-starburst, .hero-starburst-2 { margin-top: -3rem; }
 
   /* QUIÉNES SOMOS */
