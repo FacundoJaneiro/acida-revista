@@ -757,10 +757,6 @@ a {
   background: rgba(20, 20, 168, 0.35);
   border: 2px dashed rgba(20, 20, 168, 0.45);
   cursor: default;
-  clip-path: polygon(0 0, 88% 0, 100% 12%, 100% 100%, 12% 100%, 0 88%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .revista-card--pronto::after {
@@ -769,6 +765,23 @@ a {
 
 .revista-card--pronto:hover {
   transform: none;
+}
+
+.revista-card--pronto .card-edition {
+  color: rgba(255, 248, 236, 0.3);
+}
+
+.revista-card--pronto .card-title {
+  color: rgba(255, 248, 236, 0.25);
+}
+
+.revista-card--pronto .card-fecha {
+  color: transparent;
+}
+
+.revista-card--pronto .card-cta {
+  color: rgba(255, 248, 236, 0.3);
+  border-color: rgba(255, 248, 236, 0.3);
 }
 
 .card-title--pronto {

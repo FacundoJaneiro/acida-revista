@@ -45,7 +45,14 @@ const REVISTAS = [
   },
 ];
 
-const PROXIMAS = [];
+const PROXIMAS = [
+  {
+    id: 5,
+    subtitulo: 'Próxima edición',
+    titulo: '???',
+    tilt: 'card-tilt-neg',
+  },
+];
 
 const MARQUEE_A = ['ÁCIDA', 'SOSTENER LA PALABRA', 'ESCRITURA COLECTIVA', 'BUENOS AIRES', 'URGENCIA', 'APUESTA', 'RIESGO'];
 const MARQUEE_B = ['VÓMITO', 'PRIMERA EDICIÓN', 'SEPTIEMBRE 2025', 'ENSAYO', 'CRÓNICA', 'POESÍA', 'DIÁLOGO'];
@@ -395,7 +402,10 @@ export default function Home() {
                   className="revista-card revista-card--pronto reveal"
                   style={{ transitionDelay: `${(REVISTAS.length + i) * 0.12}s` }}
                 >
-                  <div className="card-pronto card-pronto--wide">Próximamente</div>
+                  <div className="card-edition">{r.subtitulo}</div>
+                  <div className="card-title card-title--long">{r.titulo}</div>
+                  <div className="card-fecha">&nbsp;</div>
+                  <div className="card-cta">Próximamente</div>
                 </div>
               </div>
             ))}
