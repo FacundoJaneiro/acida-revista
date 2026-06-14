@@ -614,16 +614,19 @@ a {
 .card-tilt-neg {
   transform: rotate(-2deg);
   height: 100%;
+  position: relative;
 }
 
 .card-tilt-pos {
   transform: rotate(1.5deg);
   height: 100%;
+  position: relative;
 }
 
 .card-tilt-slight {
   transform: rotate(-0.8deg);
   height: 100%;
+  position: relative;
 }
 
 .revista-card {
@@ -750,6 +753,22 @@ a {
   background: var(--navy);
   color: var(--off-white);
   border-color: var(--navy);
+}
+
+.card-badge {
+  position: absolute;
+  top: -1rem;
+  right: 1.5rem;
+  background: var(--orange);
+  color: var(--navy);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  padding: 0.5rem 1.2rem;
+  transform: rotate(-2deg) skewX(-4deg);
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 /* Pronto card variant */

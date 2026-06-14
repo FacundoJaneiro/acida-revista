@@ -41,6 +41,7 @@ const REVISTAS = [
     fecha: 'Junio 2026',
     href: `${BASE}/revistas/Ácida - Exprés N°2.pdf`,
     disponible: true,
+    isNew: true,
     tilt: 'card-tilt-pos',
   },
 ];
@@ -381,6 +382,7 @@ export default function Home() {
               }
               return (
                 <div key={r.id} className={r.tilt}>
+                  {r.isNew && <span className="card-badge">NUEVA</span>}
                   <div
                     className="revista-card reveal"
                     style={{ transitionDelay: `${i * 0.12}s` }}
