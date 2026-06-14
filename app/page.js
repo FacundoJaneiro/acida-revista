@@ -17,8 +17,8 @@ const REVISTAS = [
   },
   {
     id: 2,
-    titulo: 'Exprés',
-    subtitulo: 'Primera edición exprés',
+    titulo: 'Exprés N°1',
+    subtitulo: 'Todo lo que alguien quiso eliminar alguna vez',
     fecha: 'Diciembre 2025',
     href: `${BASE}/revistas/Ácida - Exprés.pdf`,
     disponible: true,
@@ -33,6 +33,15 @@ const REVISTAS = [
     disponible: true,
     releaseDate: new Date('2026-03-21T03:00:00Z'),
     tilt: 'card-tilt-neg',
+  },
+  {
+    id: 4,
+    titulo: 'Exprés N°2',
+    subtitulo: '¿Dónde estamos en el mundo de los píxeles?',
+    fecha: 'Junio 2026',
+    href: `${BASE}/revistas/Ácida - Exprés N°2.pdf`,
+    disponible: true,
+    tilt: 'card-tilt-pos',
   },
 ];
 
@@ -371,7 +380,7 @@ export default function Home() {
                     onClick={() => handleRevista(r)}
                   >
                     <div className="card-edition">{r.subtitulo}</div>
-                    <div className={`card-title${r.titulo.length > 10 ? ' card-title--long' : ''}`}>{r.titulo}</div>
+                    <div className={`card-title${r.titulo.length >= 10 ? ' card-title--long' : ''}`}>{r.titulo}</div>
                     <div className="card-fecha">{r.fecha}</div>
                     <div className="card-cta">Leer →</div>
                   </div>
@@ -386,9 +395,7 @@ export default function Home() {
                   className="revista-card revista-card--pronto reveal"
                   style={{ transitionDelay: `${(REVISTAS.length + i) * 0.12}s` }}
                 >
-                  <div className="card-edition">{r.subtitulo}</div>
-                  <div className="card-title card-title--pronto">{r.titulo}</div>
-                  <div className="card-pronto">Próximamente</div>
+                  <div className="card-pronto card-pronto--wide">Próximamente</div>
                 </div>
               </div>
             ))}

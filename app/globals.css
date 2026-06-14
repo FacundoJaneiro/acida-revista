@@ -607,20 +607,23 @@ a {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
-  align-items: start; /* cards don't stretch to equal height */
+  align-items: stretch;
 }
 
 /* card tilt wrappers */
 .card-tilt-neg {
   transform: rotate(-2deg);
+  height: 100%;
 }
 
 .card-tilt-pos {
   transform: rotate(1.5deg);
+  height: 100%;
 }
 
 .card-tilt-slight {
   transform: rotate(-0.8deg);
+  height: 100%;
 }
 
 .revista-card {
@@ -631,6 +634,8 @@ a {
   overflow: hidden;
   display: block;
   cursor: pointer;
+  height: 100%;
+  box-sizing: border-box;
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   /* cut corner */
   clip-path: polygon(0 0, 94% 0, 100% 6%, 100% 100%, 6% 100%, 0 94%);
@@ -685,7 +690,8 @@ a {
 }
 
 .card-title--long {
-  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  white-space: nowrap;
 }
 
 .revista-card--countdown {
@@ -752,6 +758,9 @@ a {
   border: 2px dashed rgba(20, 20, 168, 0.45);
   cursor: default;
   clip-path: polygon(0 0, 88% 0, 100% 12%, 100% 100%, 12% 100%, 0 88%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .revista-card--pronto::after {
@@ -775,6 +784,15 @@ a {
   text-transform: uppercase;
   transform: rotate(-3deg);
   display: inline-block;
+}
+
+.card-pronto--wide {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  color: rgba(255, 248, 236, 0.3);
+  transform: none;
+  display: block;
+  text-align: center;
+  margin: auto;
 }
 
 /* ─── SUBSTACK CTA ─── */
