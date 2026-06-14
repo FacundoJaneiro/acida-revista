@@ -1416,8 +1416,9 @@ body::after {
   .repositorio-inner { max-width: 100%; }
   .repositorio-title { font-size: clamp(3.5rem, 16vw, 7rem); }
   .repositorio-subtitle { font-size: 0.75rem; }
-  .repositorio-grid { grid-template-columns: 1fr; gap: 1rem; }
-  .card-tilt-neg, .card-tilt-pos, .card-tilt-slight { transform: none; }
+  .repositorio-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .card-tilt-neg, .card-tilt-pos, .card-tilt-slight { transform: none; padding-top: 1rem; }
+  .card-badge { top: 0; right: 1rem; font-size: 0.7rem; padding: 0.3rem 0.8rem; }
   .repositorio-blob-bg { display: none; }
   .repositorio-num-bg { display: none; }
 
