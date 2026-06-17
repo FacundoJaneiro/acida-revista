@@ -113,8 +113,6 @@ function PdfModal({ revista, onClose }) {
     };
   }, [onClose]);
 
-  const viewerSrc = `/pdfjs/web/viewer.html?file=${encodeURIComponent(window.location.origin + revista.href)}`;
-
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
@@ -124,7 +122,7 @@ function PdfModal({ revista, onClose }) {
         </div>
         <iframe
           className="modal-iframe"
-          src={viewerSrc}
+          src={revista.href}
           title={revista.titulo}
         />
       </div>
@@ -133,7 +131,7 @@ function PdfModal({ revista, onClose }) {
 }
 
 /* ─── COUNTDOWN CARD ─── */
-function CountdownCard({ revista, index, onOpen }) {
+function CountdownCard({ revista, index }) {
   const [timeLeft, setTimeLeft] = useState(null);
   const [expired, setExpired] = useState(false);
 
@@ -156,7 +154,7 @@ function CountdownCard({ revista, index, onOpen }) {
       <div
         className="revista-card reveal"
         style={{ transitionDelay: `${index * 0.12}s` }}
-        onClick={() => onOpen(revista)}
+        onClick={() => window.innerWidth < 768 ? window.open(revista.href, '_blank') : null}
       >
         <div className="card-edition">{revista.subtitulo}</div>
         <div className="card-title card-title--long">{revista.titulo}</div>
@@ -188,7 +186,11 @@ export default function Home() {
   const [modalRevista, setModalRevista] = useState(null);
 
   const handleRevista = (r) => {
-    setModalRevista(r);
+    if (window.innerWidth < 768) {
+      window.open(r.href, '_blank');
+    } else {
+      setModalRevista(r);
+    }
   };
 
   useEffect(() => {
@@ -376,7 +378,7 @@ export default function Home() {
 
             {REVISTAS.map((r, i) => {
               if (r.releaseDate && new Date() < r.releaseDate) {
-                return <CountdownCard key={r.id} revista={r} index={i} onOpen={handleRevista} />;
+                return <CountdownCard key={r.id} revista={r} index={i} />;
               }
               return (
                 <div key={r.id} className={r.tilt}>
