@@ -11,7 +11,7 @@ const REVISTAS = [
     titulo: 'Vómito',
     subtitulo: 'Primera edición',
     fecha: 'Septiembre 2025',
-    href: `${BASE}/revistas/Ácida - vomito.pdf`,
+    images: { mobile: { basePath: `${BASE}/revistas/vomito`, count: 27 } },
     disponible: true,
     tilt: 'card-tilt-neg',
   },
@@ -20,7 +20,7 @@ const REVISTAS = [
     titulo: 'Exprés N°1',
     subtitulo: 'Todo lo que alguien quiso eliminar alguna vez',
     fecha: 'Diciembre 2025',
-    href: `${BASE}/revistas/Ácida - Exprés.pdf`,
+    images: { mobile: { basePath: `${BASE}/revistas/expres1`, count: 17 } },
     disponible: true,
     tilt: 'card-tilt-pos',
   },
@@ -29,7 +29,10 @@ const REVISTAS = [
     titulo: 'El dedo en la llaga',
     subtitulo: 'Segunda edición',
     fecha: 'Marzo 2026',
-    href: `${BASE}/revistas/Ácida - El dedo en la llaga.pdf`,
+    images: {
+      mobile: { basePath: `${BASE}/revistas/dedo-mobile`, count: 48 },
+      desktop: { basePath: `${BASE}/revistas/dedo-desktop`, count: 24 },
+    },
     disponible: true,
     releaseDate: new Date('2026-03-21T03:00:00Z'),
     tilt: 'card-tilt-neg',
@@ -39,21 +42,33 @@ const REVISTAS = [
     titulo: 'Exprés N°2',
     subtitulo: '¿Dónde estamos en el mundo de los píxeles?',
     fecha: 'Junio 2026',
-    href: `${BASE}/revistas/Ácida - Exprés N°2.pdf`,
+    images: { mobile: { basePath: `${BASE}/revistas/expres-n2`, count: 24 } },
     disponible: true,
-    isNew: true,
     tilt: 'card-tilt-pos',
+  },
+  {
+    id: 5,
+    titulo: 'La calle',
+    subtitulo: 'Tercera edición',
+    fecha: 'Agosto 2026',
+    images: { mobile: { basePath: `${BASE}/revistas/lacalle-mobile`, count: 36 } },
+    disponible: true,
+    releaseDate: new Date('2026-08-19T23:00:00Z'),
+    isNew: true,
+    tilt: 'card-tilt-neg',
   },
 ];
 
 const PROXIMAS = [
   {
-    id: 5,
+    id: 6,
     subtitulo: 'Próxima edición',
     titulo: '???',
-    tilt: 'card-tilt-neg',
+    tilt: 'card-tilt-pos',
   },
 ];
+
+const titleClass = (titulo) => `card-title${titulo.length >= 15 ? ' card-title--long' : ''}`;
 
 const MARQUEE_A = ['ÁCIDA', 'SOSTENER LA PALABRA', 'ESCRITURA COLECTIVA', 'BUENOS AIRES', 'URGENCIA', 'APUESTA', 'RIESGO'];
 const MARQUEE_B = ['VÓMITO', 'PRIMERA EDICIÓN', 'SEPTIEMBRE 2025', 'ENSAYO', 'CRÓNICA', 'POESÍA', 'DIÁLOGO'];
@@ -101,37 +116,141 @@ function Marquee({ items, reverse = false, variant = 'dark' }) {
   );
 }
 
-/* ─── PDF MODAL ─── */
-function PdfModal({ revista, onClose }) {
+/* ─── IMAGE VIEWER (edición como imágenes, no PDF) ─── */
+function ImageViewer({ revista, onClose }) {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const usingDesktop = !isMobile && !!revista.images.desktop;
+  const { basePath, count } = usingDesktop ? revista.images.desktop : revista.images.mobile;
+  const scrollRef = useRef(null);
+  const pageRefs = useRef([]);
+  const [current, setCurrent] = useState(1);
+
+  const [flip, setFlip] = useState(null); // { target, direction } | null
+  const [flipActive, setFlipActive] = useState(false);
+
+  const startFlip = (direction) => {
+    if (flip) return;
+    const target = direction === 'next' ? current + 1 : current - 1;
+    if (target < 1 || target > count) return;
+    setFlip({ target, direction });
+  };
+  const goPrev = () => startFlip('prev');
+  const goNext = () => startFlip('next');
+
   useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    if (!flip) { setFlipActive(false); return; }
+    const raf = requestAnimationFrame(() => setFlipActive(true));
+    return () => cancelAnimationFrame(raf);
+  }, [flip]);
+
+  const finishFlip = () => {
+    if (!flip) return;
+    setCurrent(flip.target);
+    setFlip(null);
+  };
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+      if (!isMobile && e.key === 'ArrowLeft') goPrev();
+      if (!isMobile && e.key === 'ArrowRight') goNext();
+    };
     document.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
     };
-  }, [onClose]);
+  }, [onClose, isMobile, count, flip, current]);
+
+  useEffect(() => {
+    if (!isMobile) return;
+    const root = scrollRef.current;
+    if (!root) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) {
+          setCurrent(Number(visible.target.dataset.page));
+        }
+      },
+      { root, threshold: 0.5 }
+    );
+    pageRefs.current.forEach((el) => el && observer.observe(el));
+    return () => observer.disconnect();
+  }, [count, isMobile]);
+
+  const pages = Array.from({ length: count }, (_, i) => i + 1);
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <span className="modal-title">{revista.titulo} <em>{revista.subtitulo}</em></span>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <div className="modal-header-right">
+            <span className="viewer-counter">{current} / {count}</span>
+            <button className="modal-close" onClick={onClose}>✕</button>
+          </div>
         </div>
-        <iframe
-          className="modal-iframe"
-          src={revista.href}
-          title={revista.titulo}
-        />
+
+        {isMobile ? (
+          <div className="viewer-scroll" ref={scrollRef}>
+            {pages.map((n) => (
+              <div
+                className="viewer-page"
+                key={n}
+                data-page={n}
+                ref={(el) => { pageRefs.current[n - 1] = el; }}
+              >
+                <img
+                  src={`${basePath}/page-${String(n).padStart(2, '0')}.webp`}
+                  alt={`${revista.titulo} — página ${n}`}
+                  loading={n <= 2 ? 'eager' : 'lazy'}
+                  draggable={false}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className={`viewer-scroll viewer-scroll--paged${usingDesktop ? ' viewer-scroll--wide' : ''}`}>
+            <div
+              className="viewer-flip-stage"
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                (e.clientX - rect.left < rect.width / 2) ? goPrev() : goNext();
+              }}
+            >
+              <div className="viewer-flip-page viewer-flip-page--base">
+                <img
+                  src={`${basePath}/page-${String(flip ? flip.target : current).padStart(2, '0')}.webp`}
+                  alt={`${revista.titulo} — página ${flip ? flip.target : current}`}
+                  draggable={false}
+                />
+              </div>
+              {flip && (
+                <div
+                  className={`viewer-flip-page viewer-flip-page--overlay viewer-flip-page--${flip.direction}${flipActive ? ' is-active' : ''}`}
+                  onTransitionEnd={finishFlip}
+                >
+                  <img
+                    src={`${basePath}/page-${String(current).padStart(2, '0')}.webp`}
+                    alt={`${revista.titulo} — página ${current}`}
+                    draggable={false}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 /* ─── COUNTDOWN CARD ─── */
-function CountdownCard({ revista, index }) {
+function CountdownCard({ revista, index, onOpen }) {
   const [timeLeft, setTimeLeft] = useState(null);
   const [expired, setExpired] = useState(false);
 
@@ -154,10 +273,10 @@ function CountdownCard({ revista, index }) {
       <div
         className="revista-card reveal"
         style={{ transitionDelay: `${index * 0.12}s` }}
-        onClick={() => window.innerWidth < 768 ? window.open(revista.href, '_blank') : null}
+        onClick={() => onOpen(revista)}
       >
         <div className="card-edition">{revista.subtitulo}</div>
-        <div className="card-title card-title--long">{revista.titulo}</div>
+        <div className={titleClass(revista.titulo)}>{revista.titulo}</div>
         <div className="card-fecha">{revista.fecha}</div>
         <div className="card-cta">Leer →</div>
       </div>
@@ -168,7 +287,7 @@ function CountdownCard({ revista, index }) {
     <div className={revista.tilt}>
       <div className="revista-card revista-card--countdown reveal" style={{ transitionDelay: `${index * 0.12}s` }}>
         <div className="card-edition">{revista.subtitulo}</div>
-        <div className="card-title card-title--long">{revista.titulo}</div>
+        <div className={titleClass(revista.titulo)}>{revista.titulo}</div>
         <div className="card-pronto" style={{ color: 'rgba(255,248,236,0.6)' }}>Próximamente</div>
         <div className="card-countdown">
           {timeLeft ? `${timeLeft.h}:${timeLeft.m}:${timeLeft.s}` : '--:--:--'}
@@ -186,11 +305,7 @@ export default function Home() {
   const [modalRevista, setModalRevista] = useState(null);
 
   const handleRevista = (r) => {
-    if (window.innerWidth < 768) {
-      window.open(r.href, '_blank');
-    } else {
-      setModalRevista(r);
-    }
+    setModalRevista(r);
   };
 
   useEffect(() => {
@@ -378,7 +493,7 @@ export default function Home() {
 
             {REVISTAS.map((r, i) => {
               if (r.releaseDate && new Date() < r.releaseDate) {
-                return <CountdownCard key={r.id} revista={r} index={i} />;
+                return <CountdownCard key={r.id} revista={r} index={i} onOpen={handleRevista} />;
               }
               return (
                 <div key={r.id} className={r.tilt}>
@@ -389,7 +504,7 @@ export default function Home() {
                     onClick={() => handleRevista(r)}
                   >
                     <div className="card-edition">{r.subtitulo}</div>
-                    <div className={`card-title${r.titulo.length >= 10 ? ' card-title--long' : ''}`}>{r.titulo}</div>
+                    <div className={titleClass(r.titulo)}>{r.titulo}</div>
                     <div className="card-fecha">{r.fecha}</div>
                     <div className="card-cta">Leer →</div>
                   </div>
@@ -425,9 +540,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══ PDF MODAL ═══ */}
+      {/* ═══ VISOR DE EDICIÓN ═══ */}
       {modalRevista && (
-        <PdfModal revista={modalRevista} onClose={() => setModalRevista(null)} />
+        <ImageViewer revista={modalRevista} onClose={() => setModalRevista(null)} />
       )}
 
       {/* ═══ FOOTER ═══ */}

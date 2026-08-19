@@ -29,7 +29,7 @@
 /* ─── CUSTOM CURSOR ─── */
 @media (pointer: fine) {
   * { cursor: url('/cursors/cursor.png') 2 2, auto !important; }
-  a, button, [role="button"], .revista-card, .logo-blob, .card-cta {
+  a, button, [role="button"], .revista-card, .logo-blob, .card-cta, .viewer-flip-stage {
     cursor: url('/cursors/pointer.png') 10 2, pointer !important;
   }
 }
@@ -1341,11 +1341,120 @@ body::after {
   transform: rotate(90deg);
 }
 
-.modal-iframe {
+.modal-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-shrink: 0;
+}
+
+.viewer-counter {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: var(--off-white);
+  opacity: 0.65;
+  white-space: nowrap;
+}
+
+.viewer-scroll {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  background: #111;
+}
+
+.viewer-page {
   width: 100%;
-  border: none;
-  background: #fff;
+  max-width: 640px;
+  display: flex;
+}
+
+.viewer-scroll--wide .viewer-page {
+  max-width: 1100px;
+}
+
+.viewer-page img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* ─── VISOR PAGINADO (desktop, con flip) ─── */
+.viewer-scroll--paged {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  padding: 2rem 5rem;
+  perspective: 1800px;
+}
+
+.viewer-flip-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 1100px;
+}
+
+.viewer-scroll--wide .viewer-flip-stage {
+  max-width: 1400px;
+}
+
+.viewer-flip-page {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+}
+
+.viewer-flip-page img {
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.viewer-flip-page--base {
+  z-index: 1;
+}
+
+.viewer-flip-page--overlay {
+  z-index: 2;
+  will-change: transform;
+  transform: rotateY(0deg);
+  transition: transform 0.5s cubic-bezier(0.45, 0, 0.2, 1);
+  box-shadow: -30px 0 60px rgba(0, 0, 0, 0.4);
+}
+
+.viewer-flip-page--next {
+  transform-origin: left center;
+}
+
+.viewer-flip-page--prev {
+  transform-origin: right center;
+  box-shadow: 30px 0 60px rgba(0, 0, 0, 0.4);
+}
+
+.viewer-flip-page--next.is-active {
+  transform: rotateY(-180deg);
+}
+
+.viewer-flip-page--prev.is-active {
+  transform: rotateY(180deg);
 }
 
 @keyframes fadeIn {
@@ -1355,6 +1464,12 @@ body::after {
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 768px) {
+  /* MODAL / VISOR */
+  .modal-header { padding: 0.8rem 1rem; align-items: flex-start; }
+  .modal-title { font-size: 1rem; }
+  .modal-title em { display: block; margin-left: 0; font-size: 0.7rem; margin-top: 0.2rem; }
+  .modal-header-right { margin-top: 0.15rem; }
+
   /* NAV */
   .nav { padding: 1rem 1.5rem; }
   .nav-links { gap: 1rem; }
