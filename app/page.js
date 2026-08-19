@@ -51,7 +51,10 @@ const REVISTAS = [
     titulo: 'La calle',
     subtitulo: 'Tercera edición',
     fecha: 'Agosto 2026',
-    images: { mobile: { basePath: `${BASE}/revistas/lacalle-mobile`, count: 36 } },
+    images: {
+      mobile: { basePath: `${BASE}/revistas/lacalle-mobile`, count: 36 },
+      desktop: { basePath: `${BASE}/revistas/lacalle-desktop`, count: 22 },
+    },
     disponible: true,
     releaseDate: new Date('2026-08-19T23:00:00Z'),
     isNew: true,
