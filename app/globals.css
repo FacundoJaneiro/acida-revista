@@ -692,6 +692,11 @@ a {
   transition: color 0.3s;
 }
 
+.card-title--medium {
+  font-size: clamp(2.4rem, 5vw, 3.4rem);
+  white-space: nowrap;
+}
+
 .card-title--long {
   font-size: clamp(1.6rem, 3vw, 2.4rem);
   white-space: nowrap;

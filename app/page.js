@@ -68,7 +68,8 @@ const PROXIMAS = [
   },
 ];
 
-const titleClass = (titulo) => `card-title${titulo.length >= 15 ? ' card-title--long' : ''}`;
+const titleClass = (titulo) =>
+  `card-title ${titulo.length >= 17 ? 'card-title--long' : 'card-title--medium'}`;
 
 const MARQUEE_A = ['ÁCIDA', 'SOSTENER LA PALABRA', 'ESCRITURA COLECTIVA', 'BUENOS AIRES', 'URGENCIA', 'APUESTA', 'RIESGO'];
 const MARQUEE_B = ['VÓMITO', 'PRIMERA EDICIÓN', 'SEPTIEMBRE 2025', 'ENSAYO', 'CRÓNICA', 'POESÍA', 'DIÁLOGO'];
@@ -491,7 +492,7 @@ export default function Home() {
           <div className="repositorio-grid">
             {/* Available editions */}
 
-            {REVISTAS.map((r, i) => {
+            {[...REVISTAS].reverse().map((r, i) => {
               if (r.releaseDate && new Date() < r.releaseDate) {
                 return <CountdownCard key={r.id} revista={r} index={i} onOpen={handleRevista} />;
               }
