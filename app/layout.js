@@ -16,6 +16,7 @@ const space = Space_Grotesk({
 });
 
 export const metadata = {
+  metadataBase: new URL('https://acidarevista.com'),
   title: 'Ácida — Revista',
   description:
     'Un medio digital nacido del encuentro entre estudiantes. Sostener la palabra.',

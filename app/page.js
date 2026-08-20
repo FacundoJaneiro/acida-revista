@@ -1,78 +1,10 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import { REVISTAS, PROXIMAS, titleClass } from './revistas-data';
 
 const BASE = '';
-
-/* ─── DATA ─── */
-const REVISTAS = [
-  {
-    id: 1,
-    titulo: 'Vómito',
-    subtitulo: 'Primera edición',
-    fecha: 'Septiembre 2025',
-    images: { mobile: { basePath: `${BASE}/revistas/vomito`, count: 27 } },
-    disponible: true,
-    tilt: 'card-tilt-neg',
-  },
-  {
-    id: 2,
-    titulo: 'Exprés N°1',
-    subtitulo: 'Todo lo que alguien quiso eliminar alguna vez',
-    fecha: 'Diciembre 2025',
-    images: { mobile: { basePath: `${BASE}/revistas/expres1`, count: 17 } },
-    disponible: true,
-    tilt: 'card-tilt-pos',
-  },
-  {
-    id: 3,
-    titulo: 'El dedo en la llaga',
-    subtitulo: 'Segunda edición',
-    fecha: 'Marzo 2026',
-    images: {
-      mobile: { basePath: `${BASE}/revistas/dedo-mobile`, count: 48 },
-      desktop: { basePath: `${BASE}/revistas/dedo-desktop`, count: 24 },
-    },
-    disponible: true,
-    releaseDate: new Date('2026-03-21T03:00:00Z'),
-    tilt: 'card-tilt-neg',
-  },
-  {
-    id: 4,
-    titulo: 'Exprés N°2',
-    subtitulo: '¿Dónde estamos en el mundo de los píxeles?',
-    fecha: 'Junio 2026',
-    images: { mobile: { basePath: `${BASE}/revistas/expres-n2`, count: 24 } },
-    disponible: true,
-    tilt: 'card-tilt-pos',
-  },
-  {
-    id: 5,
-    titulo: 'La calle',
-    subtitulo: 'Tercera edición',
-    fecha: 'Agosto 2026',
-    images: {
-      mobile: { basePath: `${BASE}/revistas/lacalle-mobile`, count: 36 },
-      desktop: { basePath: `${BASE}/revistas/lacalle-desktop`, count: 22 },
-    },
-    disponible: true,
-    releaseDate: new Date('2026-08-19T23:00:00Z'),
-    isNew: true,
-    tilt: 'card-tilt-neg',
-  },
-];
-
-const PROXIMAS = [
-  {
-    id: 6,
-    subtitulo: 'Próxima edición',
-    titulo: '???',
-    tilt: 'card-tilt-pos',
-  },
-];
-
-const titleClass = (titulo) =>
-  `card-title ${titulo.length >= 17 ? 'card-title--long' : 'card-title--medium'}`;
 
 const MARQUEE_A = ['ÁCIDA', 'SOSTENER LA PALABRA', 'ESCRITURA COLECTIVA', 'BUENOS AIRES', 'URGENCIA', 'APUESTA', 'RIESGO'];
 const MARQUEE_B = ['VÓMITO', 'PRIMERA EDICIÓN', 'SEPTIEMBRE 2025', 'ENSAYO', 'CRÓNICA', 'POESÍA', 'DIÁLOGO'];
@@ -120,141 +52,8 @@ function Marquee({ items, reverse = false, variant = 'dark' }) {
   );
 }
 
-/* ─── IMAGE VIEWER (edición como imágenes, no PDF) ─── */
-function ImageViewer({ revista, onClose }) {
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const usingDesktop = !isMobile && !!revista.images.desktop;
-  const { basePath, count } = usingDesktop ? revista.images.desktop : revista.images.mobile;
-  const scrollRef = useRef(null);
-  const pageRefs = useRef([]);
-  const [current, setCurrent] = useState(1);
-
-  const [flip, setFlip] = useState(null); // { target, direction } | null
-  const [flipActive, setFlipActive] = useState(false);
-
-  const startFlip = (direction) => {
-    if (flip) return;
-    const target = direction === 'next' ? current + 1 : current - 1;
-    if (target < 1 || target > count) return;
-    setFlip({ target, direction });
-  };
-  const goPrev = () => startFlip('prev');
-  const goNext = () => startFlip('next');
-
-  useEffect(() => {
-    if (!flip) { setFlipActive(false); return; }
-    const raf = requestAnimationFrame(() => setFlipActive(true));
-    return () => cancelAnimationFrame(raf);
-  }, [flip]);
-
-  const finishFlip = () => {
-    if (!flip) return;
-    setCurrent(flip.target);
-    setFlip(null);
-  };
-
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === 'Escape') onClose();
-      if (!isMobile && e.key === 'ArrowLeft') goPrev();
-      if (!isMobile && e.key === 'ArrowRight') goNext();
-    };
-    document.addEventListener('keydown', onKey);
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.removeEventListener('keydown', onKey);
-      document.body.style.overflow = '';
-    };
-  }, [onClose, isMobile, count, flip, current]);
-
-  useEffect(() => {
-    if (!isMobile) return;
-    const root = scrollRef.current;
-    if (!root) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible) {
-          setCurrent(Number(visible.target.dataset.page));
-        }
-      },
-      { root, threshold: 0.5 }
-    );
-    pageRefs.current.forEach((el) => el && observer.observe(el));
-    return () => observer.disconnect();
-  }, [count, isMobile]);
-
-  const pages = Array.from({ length: count }, (_, i) => i + 1);
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <span className="modal-title">{revista.titulo} <em>{revista.subtitulo}</em></span>
-          <div className="modal-header-right">
-            <span className="viewer-counter">{current} / {count}</span>
-            <button className="modal-close" onClick={onClose}>✕</button>
-          </div>
-        </div>
-
-        {isMobile ? (
-          <div className="viewer-scroll" ref={scrollRef}>
-            {pages.map((n) => (
-              <div
-                className="viewer-page"
-                key={n}
-                data-page={n}
-                ref={(el) => { pageRefs.current[n - 1] = el; }}
-              >
-                <img
-                  src={`${basePath}/page-${String(n).padStart(2, '0')}.webp`}
-                  alt={`${revista.titulo} — página ${n}`}
-                  loading={n <= 2 ? 'eager' : 'lazy'}
-                  draggable={false}
-                />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className={`viewer-scroll viewer-scroll--paged${usingDesktop ? ' viewer-scroll--wide' : ''}`}>
-            <div
-              className="viewer-flip-stage"
-              onClick={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                (e.clientX - rect.left < rect.width / 2) ? goPrev() : goNext();
-              }}
-            >
-              <div className="viewer-flip-page viewer-flip-page--base">
-                <img
-                  src={`${basePath}/page-${String(flip ? flip.target : current).padStart(2, '0')}.webp`}
-                  alt={`${revista.titulo} — página ${flip ? flip.target : current}`}
-                  draggable={false}
-                />
-              </div>
-              {flip && (
-                <div
-                  className={`viewer-flip-page viewer-flip-page--overlay viewer-flip-page--${flip.direction}${flipActive ? ' is-active' : ''}`}
-                  onTransitionEnd={finishFlip}
-                >
-                  <img
-                    src={`${basePath}/page-${String(current).padStart(2, '0')}.webp`}
-                    alt={`${revista.titulo} — página ${current}`}
-                    draggable={false}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 /* ─── COUNTDOWN CARD ─── */
-function CountdownCard({ revista, index, onOpen }) {
+function CountdownCard({ revista, index }) {
   const [timeLeft, setTimeLeft] = useState(null);
   const [expired, setExpired] = useState(false);
 
@@ -274,16 +73,16 @@ function CountdownCard({ revista, index, onOpen }) {
 
   if (expired) return (
     <div className={revista.tilt}>
-      <div
+      <Link
+        href={`/ediciones/${revista.slug}`}
         className="revista-card reveal"
         style={{ transitionDelay: `${index * 0.12}s` }}
-        onClick={() => onOpen(revista)}
       >
         <div className="card-edition">{revista.subtitulo}</div>
         <div className={titleClass(revista.titulo)}>{revista.titulo}</div>
         <div className="card-fecha">{revista.fecha}</div>
         <div className="card-cta">Leer →</div>
-      </div>
+      </Link>
     </div>
   );
 
@@ -306,11 +105,6 @@ function CountdownCard({ revista, index, onOpen }) {
 export default function Home() {
   const navRef = useRef(null);
   const heroRef = useRef(null);
-  const [modalRevista, setModalRevista] = useState(null);
-
-  const handleRevista = (r) => {
-    setModalRevista(r);
-  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -497,21 +291,21 @@ export default function Home() {
 
             {[...REVISTAS].reverse().map((r, i) => {
               if (r.releaseDate && new Date() < r.releaseDate) {
-                return <CountdownCard key={r.id} revista={r} index={i} onOpen={handleRevista} />;
+                return <CountdownCard key={r.id} revista={r} index={i} />;
               }
               return (
                 <div key={r.id} className={r.tilt}>
                   {r.isNew && <span className="card-badge">NUEVA</span>}
-                  <div
+                  <Link
+                    href={`/ediciones/${r.slug}`}
                     className="revista-card reveal"
                     style={{ transitionDelay: `${i * 0.12}s` }}
-                    onClick={() => handleRevista(r)}
                   >
                     <div className="card-edition">{r.subtitulo}</div>
                     <div className={titleClass(r.titulo)}>{r.titulo}</div>
                     <div className="card-fecha">{r.fecha}</div>
                     <div className="card-cta">Leer →</div>
-                  </div>
+                  </Link>
                 </div>
               );
             })}
@@ -543,11 +337,6 @@ export default function Home() {
           </a>
         </div>
       </section>
-
-      {/* ═══ VISOR DE EDICIÓN ═══ */}
-      {modalRevista && (
-        <ImageViewer revista={modalRevista} onClose={() => setModalRevista(null)} />
-      )}
 
       {/* ═══ FOOTER ═══ */}
       <footer className="footer">
