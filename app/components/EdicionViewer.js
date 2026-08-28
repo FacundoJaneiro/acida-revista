@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import ImageViewer from './ImageViewer';
 
@@ -28,5 +29,9 @@ export default function EdicionViewer({ revista }) {
     );
   }
 
-  return <ImageViewer revista={revista} onClose={close} />;
+  return (
+    <Suspense fallback={null}>
+      <ImageViewer revista={revista} onClose={close} />
+    </Suspense>
+  );
 }

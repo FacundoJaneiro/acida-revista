@@ -1,8 +1,15 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 export default function ImageViewer({ revista, onClose }) {
+  const searchParams = useSearchParams();
+  const startMobile = parseInt(searchParams.get('pm'), 10) || 1;
+  const startDesktop = parseInt(searchParams.get('pd'), 10) || 1;
+  const finMobile = parseInt(searchParams.get('pmFin'), 10) || null;
+  const finDesktop = parseInt(searchParams.get('pdFin'), 10) || null;
+
   const [isMobile, setIsMobile] = useState(null);
   useEffect(() => {
     setIsMobile(window.innerWidth < 768);
@@ -13,6 +20,25 @@ export default function ImageViewer({ revista, onClose }) {
   const scrollRef = useRef(null);
   const pageRefs = useRef([]);
   const [current, setCurrent] = useState(1);
+  const [fullEdition, setFullEdition] = useState(false);
+
+  const rawStart = usingDesktop ? startDesktop : startMobile;
+  const rawFin = usingDesktop ? finDesktop : finMobile;
+  const hasRange = rawFin != null && rawFin >= rawStart;
+  const minPage = !fullEdition && hasRange ? Math.max(1, rawStart) : 1;
+  const maxPage = !fullEdition && hasRange ? Math.min(count, rawFin) : count;
+
+  useEffect(() => {
+    if (isMobile === null) return;
+    const target = Math.min(Math.max(rawStart, 1), count);
+    setCurrent(target);
+    if (isMobile && target > minPage) {
+      requestAnimationFrame(() => {
+        pageRefs.current[target - 1]?.scrollIntoView({ block: 'start' });
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMobile]);
 
   const [flip, setFlip] = useState(null); // { target, direction } | null
   const [flipActive, setFlipActive] = useState(false);
@@ -20,7 +46,7 @@ export default function ImageViewer({ revista, onClose }) {
   const startFlip = (direction) => {
     if (flip) return;
     const target = direction === 'next' ? current + 1 : current - 1;
-    if (target < 1 || target > count) return;
+    if (target < minPage || target > maxPage) return;
     setFlip({ target, direction });
   };
   const goPrev = () => startFlip('prev');
@@ -50,7 +76,7 @@ export default function ImageViewer({ revista, onClose }) {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
     };
-  }, [onClose, isMobile, count, flip, current]);
+  }, [onClose, isMobile, minPage, maxPage, flip, current]);
 
   useEffect(() => {
     if (!isMobile) return;
@@ -69,9 +95,12 @@ export default function ImageViewer({ revista, onClose }) {
     );
     pageRefs.current.forEach((el) => el && observer.observe(el));
     return () => observer.disconnect();
-  }, [count, isMobile]);
+  }, [minPage, maxPage, isMobile]);
 
-  const pages = Array.from({ length: count }, (_, i) => i + 1);
+  const pages = Array.from({ length: maxPage - minPage + 1 }, (_, i) => minPage + i);
+  const restricted = !fullEdition && hasRange;
+  const counterCurrent = restricted ? current - minPage + 1 : current;
+  const counterTotal = restricted ? maxPage - minPage + 1 : count;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -79,7 +108,12 @@ export default function ImageViewer({ revista, onClose }) {
         <div className="modal-header">
           <span className="modal-title">{revista.titulo} <em>{revista.subtitulo}</em></span>
           <div className="modal-header-right">
-            <span className="viewer-counter">{current} / {count}</span>
+            {restricted && (
+              <button className="viewer-full-edition-btn" onClick={() => setFullEdition(true)}>
+                Ver edición completa
+              </button>
+            )}
+            <span className="viewer-counter">{counterCurrent} / {counterTotal}</span>
             <button className="modal-close" onClick={onClose}>✕</button>
           </div>
         </div>
@@ -100,7 +134,7 @@ export default function ImageViewer({ revista, onClose }) {
                   alt={`${revista.titulo} — página ${n}`}
                   width={w}
                   height={h}
-                  loading={n <= 2 ? 'eager' : 'lazy'}
+                  loading={n <= minPage + 1 ? 'eager' : 'lazy'}
                   draggable={false}
                 />
               </div>

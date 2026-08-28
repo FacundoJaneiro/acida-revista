@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { REVISTAS, PROXIMAS, titleClass } from './revistas-data';
+import Buscador from './components/Buscador';
 
 const BASE = '';
 
@@ -105,6 +106,10 @@ function CountdownCard({ revista, index }) {
 export default function Home() {
   const navRef = useRef(null);
   const heroRef = useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const drawerSearchRef = useRef(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -153,6 +158,32 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (!menuOpen) setSearchOpen(false);
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (searchOpen) drawerSearchRef.current?.focus();
+  }, [searchOpen]);
+
+  const goToBuscador = () => {
+    setMenuOpen(false);
+    setTimeout(() => {
+      document.getElementById('buscador')?.scrollIntoView({ behavior: 'smooth' });
+    }, 350);
+  };
+
   return (
     <>
       {/* ═══ NAV ═══ */}
@@ -160,11 +191,62 @@ export default function Home() {
         <a href="#inicio" className="nav-logo">
           <img src={`${BASE}/navbar.png`} alt="ÁCIDA" className="nav-logo-img" />
         </a>
-        <div className="nav-links">
-          <a href="#quienes-somos">Quiénes somos</a>
-          <a href="#ediciones">Ediciones</a>
-        </div>
+        <button
+          className={`nav-menu-btn${menuOpen ? ' is-open' : ''}`}
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
+          aria-expanded={menuOpen}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
       </nav>
+
+      <div className={`nav-drawer${menuOpen ? ' is-open' : ''}`}>
+        <div className="nav-drawer-overlay" onClick={() => setMenuOpen(false)} />
+        <div className="nav-drawer-panel">
+          <form
+            className={`nav-drawer-search${searchOpen ? ' is-open' : ''}`}
+            onSubmit={(e) => { e.preventDefault(); goToBuscador(); }}
+          >
+            <button
+              type="button"
+              className="nav-drawer-search-btn"
+              aria-label="Buscar"
+              onClick={() => setSearchOpen((v) => !v)}
+            >
+              <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" />
+                <line x1="16.2" y1="16.2" x2="21" y2="21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+              <span>Buscar</span>
+            </button>
+            <input
+              ref={drawerSearchRef}
+              type="text"
+              className="nav-drawer-search-input"
+              placeholder="Buscar artículo, autor…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </form>
+
+          <div className="nav-drawer-divider" />
+
+          <a href="#inicio" onClick={() => setMenuOpen(false)}>Inicio</a>
+          <a href="#quienes-somos" onClick={() => setMenuOpen(false)}>Quiénes somos</a>
+          <a href="#ediciones" onClick={() => setMenuOpen(false)}>Ediciones</a>
+          <a
+            href="https://www.instagram.com/acidarevista"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setMenuOpen(false)}
+          >
+            Instagram
+          </a>
+        </div>
+      </div>
 
       {/* ═══ HERO ═══ */}
       <section id="inicio" className="hero" ref={heroRef}>
@@ -337,6 +419,8 @@ export default function Home() {
           </a>
         </div>
       </section>
+
+      <Buscador query={searchQuery} onQueryChange={setSearchQuery} />
 
       {/* ═══ FOOTER ═══ */}
       <footer className="footer">
