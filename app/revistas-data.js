@@ -53,7 +53,7 @@ export const REVISTAS = [
     subtitulo: 'Tercera edición',
     fecha: 'Agosto 2026',
     images: {
-      mobile: { basePath: `${BASE}/revistas/lacalle-mobile`, count: 36, w: 2160, h: 3840 },
+      mobile: { basePath: `${BASE}/revistas/lacalle-mobile`, count: 37, w: 2160, h: 3840 },
       desktop: { basePath: `${BASE}/revistas/lacalle-desktop`, count: 22, w: 2526, h: 1786 },
     },
     disponible: true,
