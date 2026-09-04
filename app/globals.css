@@ -57,9 +57,9 @@
 
 /* ─── CUSTOM CURSOR ─── */
 @media (pointer: fine) {
-  * { cursor: url('/cursors/cursor.png') 2 2, auto !important; }
+  * { cursor: url('/cursors/pointer.png') 10 2, auto !important; }
   a, button, [role="button"], .revista-card, .logo-blob, .card-cta, .viewer-flip-stage {
-    cursor: url('/cursors/pointer.png') 10 2, pointer !important;
+    cursor: url('/cursors/cursor.png') 2 2, pointer !important;
   }
 }
 
