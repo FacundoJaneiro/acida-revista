@@ -1489,12 +1489,8 @@ body::after {
   display: block;
   height: 2px;
   width: 100%;
-  background: var(--navy);
-  transition: transform 0.3s ease, opacity 0.2s ease, background 0.4s;
-}
-
-.nav.scrolled .nav-menu-btn span {
   background: var(--off-white);
+  transition: transform 0.3s ease, opacity 0.2s ease, background 0.4s;
 }
 
 .nav-menu-btn.is-open span {
