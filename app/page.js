@@ -10,6 +10,63 @@ const BASE = '';
 const MARQUEE_A = ['ÁCIDA', 'SOSTENER LA PALABRA', 'ESCRITURA COLECTIVA', 'BUENOS AIRES', 'URGENCIA', 'APUESTA', 'RIESGO'];
 const MARQUEE_B = ['VÓMITO', 'PRIMERA EDICIÓN', 'SEPTIEMBRE 2025', 'ENSAYO', 'CRÓNICA', 'POESÍA', 'DIÁLOGO'];
 
+const NUEVA_EDICION = REVISTAS.find((r) => r.isNew) || REVISTAS[REVISTAS.length - 1];
+
+const ACCENT_MAP = { á: 'a', é: 'e', í: 'i', ó: 'o', ú: 'u', Á: 'A', É: 'E', Í: 'I', Ó: 'O', Ú: 'U' };
+
+/* Renders text set in the Acidic display font: the font has no accented
+   glyphs, so accented vowels are drawn as the base letter plus a small
+   apostrophe-like mark placed above it. */
+function acidicVisual(str) {
+  return [...str].map((ch, i) => {
+    const base = ACCENT_MAP[ch];
+    if (!base) return ch;
+    return (
+      <span className="tilde-wrap" key={i}>
+        {base}
+        <span className="tilde-mark" aria-hidden="true">’</span>
+      </span>
+    );
+  });
+}
+
+function acidicText(str) {
+  return (
+    <>
+      <span aria-hidden="true">{acidicVisual(str)}</span>
+      <span className="sr-only">{str}</span>
+    </>
+  );
+}
+
+/* Same as acidicText, but tracks each letter individually — some tight,
+   some blown wide open — for the torn-poster title treatment. */
+function trackedText(str, gaps) {
+  return (
+    <>
+      <span aria-hidden="true">
+        {[...str].map((ch, i) => {
+          const base = ACCENT_MAP[ch];
+          const style = { display: 'inline-block', marginRight: `${gaps[i] || 0}em` };
+          if (!base) return <span key={i} style={style}>{ch}</span>;
+          return (
+            <span key={i} className="tilde-wrap" style={style}>
+              {base}
+              <span className="tilde-mark" aria-hidden="true">’</span>
+            </span>
+          );
+        })}
+      </span>
+      <span className="sr-only">{str}</span>
+    </>
+  );
+}
+
+const EDICIONES_TRACKING = [0.02, 0.18, 0.30, 0.34, 0.46, 0.28, 0.34, 0.05, 0];
+
+const CARD_SCRIM = 'linear-gradient(to top, rgba(8,8,16,0.94) 0%, rgba(8,8,16,0.82) 38%, rgba(8,8,16,0.25) 64%, rgba(8,8,16,0) 88%)';
+const coverStyle = (slug) => ({ backgroundImage: `${CARD_SCRIM}, url(${BASE}/covers/${slug}.webp)` });
+
 /* ─── STARBURST SVG ─── */
 function Starburst({ className, count = 40, len = 150 }) {
   const lines = Array.from({ length: count }, (_, i) => {
@@ -77,10 +134,10 @@ function CountdownCard({ revista, index }) {
       <Link
         href={`/ediciones/${revista.slug}`}
         className="revista-card reveal"
-        style={{ transitionDelay: `${index * 0.12}s` }}
+        style={{ transitionDelay: `${index * 0.12}s`, ...coverStyle(revista.slug) }}
       >
         <div className="card-edition">{revista.subtitulo}</div>
-        <div className={titleClass(revista.titulo)}>{revista.titulo}</div>
+        <div className={titleClass(revista.titulo)}>{acidicText(revista.titulo)}</div>
         <div className="card-fecha">{revista.fecha}</div>
         <div className="card-cta">Leer →</div>
       </Link>
@@ -89,9 +146,9 @@ function CountdownCard({ revista, index }) {
 
   return (
     <div className={revista.tilt}>
-      <div className="revista-card revista-card--countdown reveal" style={{ transitionDelay: `${index * 0.12}s` }}>
+      <div className="revista-card revista-card--countdown reveal" style={{ transitionDelay: `${index * 0.12}s`, ...coverStyle(revista.slug) }}>
         <div className="card-edition">{revista.subtitulo}</div>
-        <div className={titleClass(revista.titulo)}>{revista.titulo}</div>
+        <div className={titleClass(revista.titulo)}>{acidicText(revista.titulo)}</div>
         <div className="card-pronto" style={{ color: 'rgba(255,248,236,0.6)' }}>Próximamente</div>
         <div className="card-countdown">
           {timeLeft ? `${timeLeft.h}:${timeLeft.m}:${timeLeft.s}` : '--:--:--'}
@@ -205,7 +262,7 @@ export default function Home() {
 
       <div className={`nav-drawer${menuOpen ? ' is-open' : ''}`}>
         <div className="nav-drawer-overlay" onClick={() => setMenuOpen(false)} />
-        <div className="nav-drawer-panel">
+        <div className="nav-drawer-panel textura-grano">
           <form
             className={`nav-drawer-search${searchOpen ? ' is-open' : ''}`}
             onSubmit={(e) => { e.preventDefault(); goToBuscador(); }}
@@ -234,6 +291,17 @@ export default function Home() {
 
           <div className="nav-drawer-divider" />
 
+          <Link
+            href={`/ediciones/${NUEVA_EDICION.slug}`}
+            className="nav-drawer-featured"
+            onClick={() => setMenuOpen(false)}
+          >
+            <span className="nav-drawer-featured-tag">Nueva edición</span>
+            {NUEVA_EDICION.titulo}
+          </Link>
+
+          <div className="nav-drawer-divider" />
+
           <a href="#inicio" onClick={() => setMenuOpen(false)}>Inicio</a>
           <a href="#quienes-somos" onClick={() => setMenuOpen(false)}>Quiénes somos</a>
           <a href="#ediciones" onClick={() => setMenuOpen(false)}>Ediciones</a>
@@ -253,10 +321,6 @@ export default function Home() {
         <Starburst className="hero-starburst" count={40} len={150} />
         <Starburst className="hero-starburst-2" count={24} len={120} />
 
-        {/* Pulse rings behind logo */}
-        <div className="hero-pulse-ring" aria-hidden="true" />
-        <div className="hero-pulse-ring hero-pulse-ring--2" aria-hidden="true" />
-
         <div className="hero-content">
           <div className="hero-logo-wrap">
             <div className="logo-text-img-wrap">
@@ -266,15 +330,18 @@ export default function Home() {
                 className="logo-text-img"
               />
             </div>
-            <img
-              src={`${BASE}/fondo-titulo.svg`}
-              alt="ÁCIDA Revista"
+            <div
               className="hero-logo-img"
+              role="img"
+              aria-label="ÁCIDA Revista"
             />
           </div>
 
-          <p className="hero-edition">Revista digital · Buenos Aires</p>
-          <p className="hero-tagline">Refundarse en los viejos métodos colectivos</p>
+          <p className="hero-tagline">Refundarse en los <span className="marcador">viejos métodos colectivos</span></p>
+
+          <Link href={`/ediciones/${NUEVA_EDICION.slug}`} className="hero-cta">
+            Leer {NUEVA_EDICION.titulo} →
+          </Link>
 
           <a
             href="https://www.instagram.com/acidarevista"
@@ -286,32 +353,27 @@ export default function Home() {
           </a>
         </div>
 
-        {/* scroll hint */}
-        <a href="#quienes-somos" className="hero-scroll">
-          <div className="hero-scroll-line" />
-          <span className="hero-scroll-label">scroll</span>
-        </a>
-
+        <div className="torn-divider torn-divider--quienes" aria-hidden="true" />
       </section>
 
       {/* ═══ QUIÉNES SOMOS ═══ */}
       <section id="quienes-somos" className="quienes">
-        <div className="quienes-blob-sm" aria-hidden="true" />
-        <div className="quienes-vertical" aria-hidden="true">ESCRITURA COLECTIVA · ESCRITURA COLECTIVA · ESCRITURA COLECTIVA</div>
-        <div className="quienes-slash" aria-hidden="true" />
-        <div className="quienes-slash-2" aria-hidden="true" />
-        <div className="quienes-interference" aria-hidden="true" />
-        <img src={`${BASE}/elemento.png`} className="quienes-elemento" aria-hidden="true" />
-        <img src={`${BASE}/acido-naranja.png`} className="quienes-acido" alt="" />
-
         <div className="quienes-inner">
-          <h2 className="quienes-title reveal">
-            <span className="quienes-title-line1">QUIÉNES</span>
-            <span className="quienes-title-line2">SOMOS</span>
-          </h2>
+          <span className="quienes-kicker reveal">MEDIO DIGITAL · BUENOS AIRES</span>
 
-          <div className="quienes-grid">
-            <div className="quienes-col reveal-left">
+          <div className="quienes-layout">
+            <div className="quienes-left reveal-left">
+              <h2 className="quienes-title-new">
+                <span aria-hidden="true">
+                  <span className="glitch-layer glitch-back">{acidicVisual('QUIÉNES')}<br />{acidicVisual('SOMOS')}</span>
+                  <span className="glitch-layer glitch-front">{acidicVisual('QUIÉNES')}<br />{acidicVisual('SOMOS')}</span>
+                </span>
+                <span className="sr-only">QUIÉNES SOMOS</span>
+              </h2>
+              <img src={`${BASE}/elemento.png`} className="quienes-elemento-new" aria-hidden="true" />
+            </div>
+
+            <div className="quienes-right reveal" style={{ transitionDelay: '0.15s' }}>
               <p>
                 <strong>Ácida</strong> es un medio digital nacido del encuentro
                 entre estudiantes de distintas carreras, atravesados por una misma
@@ -326,12 +388,6 @@ export default function Home() {
                 sino que se construye en colectivo, entre contradicciones, preguntas
                 y apuestas.
               </p>
-            </div>
-
-            <div
-              className="quienes-col reveal"
-              style={{ transitionDelay: '0.2s' }}
-            >
               <p>
                 No nos interesa la neutralidad ni los discursos tibios. Tomamos
                 posición, pero sin caer en celos ideológicos ni repetir fórmulas.
@@ -342,30 +398,37 @@ export default function Home() {
                 Ácida es una apuesta por la escritura colectiva, por el texto que
                 se transforma mientras lo pensamos, mientras lo discutimos,
                 mientras lo prestamos. No buscamos imponernos como referencia,
-                sino ser parte de una conversación más grande.
-              </p>
-              <p>
+                sino ser parte de una conversación más grande.{' '}
                 <strong>Esperamos que les incomode.</strong>
               </p>
+
+              <p className="quienes-highlight">
+                Acá van a encontrar <span className="marcador">artículos, reseñas, fotos, dibujos, cuentos, ensayos</span> y otras cosas que se nos dé la gana publicar.
+              </p>
+
+              <div className="quienes-ig">
+                <a
+                  href="https://www.instagram.com/acidarevista"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  @acidarevista
+                </a>
+              </div>
             </div>
           </div>
-
-          <img src={`${BASE}/elemento.png`} className="quienes-elemento-mobile" aria-hidden="true" />
-
-          <p className="quienes-highlight reveal" style={{ transitionDelay: '0.15s' }}>
-            Acá van a encontrar artículos, reseñas, fotos, dibujos, cuentos,
-            ensayos y otras cosas que se nos dé la gana publicar.
-          </p>
         </div>
 
+        <div className="torn-divider torn-divider--ediciones" aria-hidden="true" />
       </section>
 
       {/* ═══ REPOSITORIO ═══ */}
       <section id="ediciones" className="repositorio">
         <div className="repositorio-blob-bg" aria-hidden="true" />
+        <img src={`${BASE}/tipo%20acido%20azul.png`} className="repositorio-mascota" aria-hidden="true" />
 
         <div className="repositorio-inner">
-          <h2 className="repositorio-title reveal">EDICIONES</h2>
+          <h2 className="repositorio-title reveal">{trackedText('EDICIONES', EDICIONES_TRACKING)}</h2>
           <p className="repositorio-subtitle reveal">Todas las ediciones</p>
 
           <div className="repositorio-grid">
@@ -381,10 +444,10 @@ export default function Home() {
                   <Link
                     href={`/ediciones/${r.slug}`}
                     className="revista-card reveal"
-                    style={{ transitionDelay: `${i * 0.12}s` }}
+                    style={{ transitionDelay: `${i * 0.12}s`, ...coverStyle(r.slug) }}
                   >
                     <div className="card-edition">{r.subtitulo}</div>
-                    <div className={titleClass(r.titulo)}>{r.titulo}</div>
+                    <div className={titleClass(r.titulo)}>{acidicText(r.titulo)}</div>
                     <div className="card-fecha">{r.fecha}</div>
                     <div className="card-cta">Leer →</div>
                   </Link>
@@ -415,9 +478,11 @@ export default function Home() {
             className="substack-cta reveal"
           >
             <span className="substack-cta-title">Todos los artículos</span>
-            <span className="substack-cta-sub">SUBSTACK</span>
+            <span className="substack-cta-sub">SUSCRIBITE EN SUBSTACK</span>
           </a>
         </div>
+
+        <div className="torn-divider torn-divider--buscador" aria-hidden="true" />
       </section>
 
       <Buscador query={searchQuery} onQueryChange={setSearchQuery} />

@@ -60,9 +60,11 @@ export default function Buscador({ query, onQueryChange }) {
   }, [query]);
 
   return (
-    <section id="buscador" className="buscador">
+    <section id="buscador" className="buscador textura-grano">
       <div className="buscador-blob-bg" aria-hidden="true" />
+      <img src="/fondo-titulo.svg" alt="" className="buscador-sticker" aria-hidden="true" />
       <div className="buscador-inner">
+        <span className="buscador-kicker reveal">Encontrá lo que buscás</span>
         <h2 className="buscador-title reveal">BUSCADOR</h2>
         <p className="buscador-subtitle reveal">Buscá por título, autor o contenido de un artículo</p>
 
